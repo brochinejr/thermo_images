@@ -3,10 +3,7 @@ import cv2
  
 # load the image, convert it to grayscale, and blur it slightly
 
-#image = cv2.imread('perna_frente.jpg')
-#image = cv2.imread('perna_costas.jpg')
-image = cv2.imread('pe.jpg') # pegando só uma imagem
-#image = cv2.imread('dorso_costas.jpg')
+image = cv2.imread(r'images/perna_frente.jpg') # pegando só uma imagem
 
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 gray = cv2.GaussianBlur(gray, (5, 5), 0)
