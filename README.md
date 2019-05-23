@@ -4,7 +4,7 @@ Repository to thermoimages project
 https://www.workana.com/job/processamento-de-imagem-1?dateFrom=2019-05-22&dateTo=2019-05-22&page=1&status=pending
 
 Projeto:
-0. Definições de Inputs:(início previsto 20/05 - inicio real 22/05)
+0. Definições de Inputs:(início previsto 20/05 - inicio real 22/05)\n
     0.1 Avaliar as Imagens de Teste
     0.2 Definir os padrões de imagens a serem trabalhados
     0.3 Criar Script Principal do Projeto
