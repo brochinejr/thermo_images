@@ -1,8 +1,0 @@
-0. Definições de Inputs:(início previsto 20/05 - inicio real 22/05)
-    0.1 Avaliar as Imagens de Teste;
-    [ ] As Imagens Disponíveis são: dorso_costa, pé e perna frente.
-    [ ] As dimensões das Imagens são 480x640 sempre?
-    [ ] Nas segmentações enviadas não há a divisão da planta do pé.
-    0.2 Definir os padrões de imagens a serem trabalhados
-    0.3 Criar Script Principal do Projeto
-    0.4 GATE de Validação(data prevista 22/05)
