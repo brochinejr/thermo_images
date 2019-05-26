@@ -3,7 +3,7 @@ Repository to thermoimages project
 
 https://www.workana.com/job/processamento-de-imagem-1?dateFrom=2019-05-22&dateTo=2019-05-22&page=1&status=pending
 
-##Projeto:
+### Projeto:
 * 0. Definições de Inputs:(início previsto 20/05 - inicio real 22/05)
     * 0.1 Avaliar as Imagens de Teste
     * 0.2 Definir os padrões de imagens a serem trabalhados
@@ -68,12 +68,21 @@ https://www.workana.com/job/processamento-de-imagem-1?dateFrom=2019-05-22&dateTo
             ├── README.md
             ├── requirements.txt
             ├── setup.py
-    
+            
+            0.3.1 Padrão de Documentação:
+                Google Style Python Docstrings
+                (https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html)
         0.4 GATE de Validação(data prevista 22/05)
+        
         
     1.Contorno do Corpo (data prevista 23/05)
         1.1 Utilizar OpenCV para contorno do corpo;
         1.2 Relacionar contorno do corpo com padrões definidos;
         1.3 Script: Input -> Imagem Output-> contornos e classificação;
         1.4 GATE de Validação (data prevista 25/05;
- 
+
+# REFERENCES
+
+[1. Contours](https://docs.opencv.org/3.4/d1/d32/tutorial_py_contour_properties.html)
+
+[2. Documentation](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html)
