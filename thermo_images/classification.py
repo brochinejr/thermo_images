@@ -227,10 +227,10 @@ if __name__ == '__main__':
         image_path=os.path.join(image_folder,file)
         k=image_kind(image_path)
         print(file,':',kind[k])
-    for file in os.listdir(image_folder):
-        image_path=os.path.join(image_folder,file)
-        imp=impanting(image_path,r'image_map/mask.jpeg')
+        if k is not 1:
+            imp=impanting(image_path,r'image_map/mask.jpeg')
+        else:
+            imp=cv2.imread(image_path)
         bk=plot_contours(imp)
-
-        # cv2.imshow("Image", black_image)
-        # cv2.waitKey(0)
+        cv2.imshow("Image",bk)
+        cv2.waitKey(0)
