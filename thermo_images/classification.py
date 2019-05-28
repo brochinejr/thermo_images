@@ -227,3 +227,6 @@ if __name__ == '__main__':
         image_path=os.path.join(image_folder,file)
         k=image_kind(image_path)
         print(file,':',kind[k])
+    for file in os.listdir(image_folder):
+        image_path=os.path.join(image_folder,file)
+        imp=impanting(image_path,r'image_map/mask.jpeg')
