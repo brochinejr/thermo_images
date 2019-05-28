@@ -37,7 +37,7 @@ https://www.workana.com/job/processamento-de-imagem-1?dateFrom=2019-05-22&dateTo
   * 4.3 GATE de Validação (data prevista 05/06)
   
   
-# PROJECT
+# PROJECT EVOLUTION
 
     0. Definições de Inputs:(início previsto 20/05 - inicio real 22/05)
         0.1 Avaliar as Imagens de Teste;
@@ -86,3 +86,9 @@ https://www.workana.com/job/processamento-de-imagem-1?dateFrom=2019-05-22&dateTo
 [1. Contours](https://docs.opencv.org/3.4/d1/d32/tutorial_py_contour_properties.html)
 
 [2. Documentation](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html)
+
+[3. Skeletonization](http://opencvpython.blogspot.com/2012/05/skeletonization-using-opencv-python.html)
+
+[4. Topological Skeleton](https://en.wikipedia.org/wiki/Topological_skeleton)
+
+

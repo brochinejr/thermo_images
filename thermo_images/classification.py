@@ -16,6 +16,69 @@ import numpy as np
 import cv2
 import imutils
 import os
+import math
+
+def skeleton(img):
+    """Topolopgical Skeleton: this function provides topoloical skeleton of an image.
+        Args:
+            image(cv2.image): image loaded by cv2.imread.
+
+        Returns:
+            image(cv2.image): skeletonized image
+        References:
+            - https://en.wikipedia.org/wiki/Topological_skeleton
+            - http://opencvpython.blogspot.com/2012/05/skeletonization-using-opencv-python.html
+    """
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    size = np.size(img)
+    skel = np.zeros(img.shape, np.uint8)
+
+    ret, img = cv2.threshold(img, 127, 255, 0)
+    element = cv2.getStructuringElement(cv2.MORPH_CROSS, (3, 3))
+    done = False
+    while (not done):
+        eroded = cv2.erode(img, element)
+        temp = cv2.dilate(eroded, element)
+        temp = cv2.subtract(img, temp)
+        skel = cv2.bitwise_or(skel, temp)
+        img = eroded.copy()
+
+        zeros = size - cv2.countNonZero(img)
+        if zeros == size:
+            done = True
+    return skel
+
+
+def plot_contour(image):
+    """External contour: this function provides the most external contour in a image.
+        Args:
+            image(cv2.image): image loaded by cv2.imread.
+
+        Returns:
+            image(cv2.image): impanted image
+        References:
+            https://docs.opencv.org/3.4/d1/d32/tutorial_py_contour_properties.html
+    """
+
+    # load the image, convert it to grayscale, and blur it slightly
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    gray = cv2.GaussianBlur(gray, (5, 5), 0)
+
+    # threshold the image, then perform a series of erosions +
+    # dilations to remove any small regions of noise
+    thresh = cv2.threshold(gray, 45, 255, cv2.THRESH_BINARY)[1]
+    thresh = cv2.erode(thresh, None, iterations=2)
+    thresh = cv2.dilate(thresh, None, iterations=2)
+
+    # find contours in thresholded image, then grab the largest one
+    cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    print(len(cnts))
+    for cnt in cnts:
+        cv2.drawContours(img, [cnt], 0, (0, 255, 0), 3)
+        cv2.imshow("Image", image)
+        cv2.waitKey()
+        cv2.destroyAllWindows()
+
 
 def impanting(image_path,mask_path):
     """Image Impanting: this uses a mask to interpolate a mask region with surroundings pixels.
@@ -32,6 +95,28 @@ def impanting(image_path,mask_path):
     dst = cv2.inpaint(img, mask, 3, cv2.INPAINT_TELEA)
     return dst
 
+def shape_match(im1,im2):
+    """Shape Distance: returns de distance between two images based on Hu moments.
+
+        Args:
+            im1(cv2.image): gray image 1.
+            im2(cv2.image): gray image 2
+
+        Returns:
+            d1,d2,d3 (float): distance based on Hu moments
+
+        References:
+            https://www.learnopencv.com/shape-matching-using-hu-moments-c-python/
+    """
+    # im2 = cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY)
+    _, im1 = cv2.threshold(im1, 128, 255, cv2.THRESH_BINARY)
+    _, im2 = cv2.threshold(im2, 128, 255, cv2.THRESH_BINARY)
+    d1 = cv2.matchShapes(im1, im2, cv2.CONTOURS_MATCH_I1, 0)
+    d2 = cv2.matchShapes(im1, im2, cv2.CONTOURS_MATCH_I2, 0)
+    d3 = cv2.matchShapes(im1, im2, cv2.CONTOURS_MATCH_I3, 0)
+    return d1,d2,d3
+
+
 def external_contour(image):
     """External contour: this function provides the most external contour in a image.
         Args:
@@ -39,6 +124,7 @@ def external_contour(image):
 
         Returns:
             image(cv2.image): impanted image
+
         References:
             https://docs.opencv.org/3.4/d1/d32/tutorial_py_contour_properties.html
     """
@@ -91,41 +177,49 @@ def image_kind(image_path):
         contorno = external_contour(impant)
         area=cv2.contourArea(contorno)
         c=contorno
-        #solidity
+        # solidity
         hull = cv2.convexHull(contorno)
         hull_area = cv2.contourArea(hull)
         solidity = float(area) / hull_area
-        #aspect ratio
+        # aspect ratio
         x, y, w, h = cv2.boundingRect(contorno)
         aspect_ratio = float(w) / h
         if aspect_ratio>0.60:
             kind='dorso'
+            back_pth = r'image_map/skeleton/dorso_costa_model.jpeg'
+            front_pth = r'image_map/skeleton/dorso_frente_model.jpeg'
+            back = cv2.imread(back_pth,cv2.COLOR_BGR2GRAY)
+            front = cv2.imread(front_pth,cv2.COLOR_BGR2GRAY)
+            ske=skeleton(impant)
+            b1, b2, b3 = shape_match(ske, back)
+            b=math.sqrt(b1**2+b2**2+b3**2)
+            f1, f2, f3 = shape_match(ske, front)
+            f = math.sqrt(f1 ** 2 + f2 ** 2 + f3 ** 2)
+            if f<b:
+                kind=2
+            else:
+                kind=3
         elif aspect_ratio<0.60:
             kind='perna'
-    return kind,solidity,aspect_ratio
+            back_pth = r'image_map/skeleton/perna_costa_model.jpeg'
+            front_pth = r'image_map/skeleton/perna_frente_model.jpeg'
+            back = cv2.imread(back_pth,cv2.COLOR_BGR2GRAY)
+            front = cv2.imread(front_pth,cv2.COLOR_BGR2GRAY)
+            ske=skeleton(impant)
+            b1, b2, b3 = shape_match(ske, back)
+            b=math.sqrt(b1**2+b2**2+b3**2)
+            f1, f2, f3 = shape_match(ske, front)
+            f = math.sqrt(f1 ** 2 + f2 ** 2 + f3 ** 2)
+            if f<b:
+                kind=4
+            else:
+                kind=5
+    return kind
 
 if __name__ == '__main__':
     image_folder=r'../testes/images'
-    image_file=r'../testes/images/dorso_costa01.jpeg'
-    mask_path=r'image_map/mask.jpeg'
-    teste=impanting(image_file,mask_path)
-    contorno=external_contour(teste)
-
-    # draw contours
-    # cv2.drawContours(teste, [contorno], -1, (0, 255, 0), 3)
-    # convex hull
-    # cov=cv2.convexHull(contorno)
-    # cv2.drawContours(teste, [cov], -1, (0, 255, 0), 3)
-    # #
-    # cv2.imshow("Image", teste)
-    # cv2.waitKey()
-    # cv2.destroyAllWindows()
-
-    #contour Area
-    print(cv2.contourArea(contorno))
-    print('file,kind,area')
+    kind={1:'Foot',2:'Front Upper Body',3: 'Back Upper Body',4: 'Front Legs', 5:'Back Legs'}
     for file in os.listdir(image_folder):
         file_path=os.path.join(image_folder,file)
-        k,s,ar=image_kind(file_path)
-        if k is not 1:
-            print(file,k,s,ar)
+        k=image_kind(file_path)
+        print(file,':',kind[k])
