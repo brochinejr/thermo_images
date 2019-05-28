@@ -18,6 +18,41 @@ import imutils
 import os
 import math
 
+
+def plot_contours(image):
+
+    # load the image, convert it to grayscale, and blur it slightly
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    gray = cv2.GaussianBlur(gray, (5, 5), 0)
+
+    # threshold the image, then perform a series of erosions +
+    # dilations to remove any small regions of noise
+    thresh = cv2.threshold(gray, 45, 255, cv2.THRESH_BINARY)[1]
+    thresh = cv2.erode(thresh, None, iterations=2)
+    thresh = cv2.dilate(thresh, None, iterations=2)
+    #
+    dimension = gray.shape
+    X_DIMENSION = dimension[0]
+    Y_DIMENSION = dimension[1]
+    black_image = np.zeros((X_DIMENSION, Y_DIMENSION))
+    #
+    # find contours in thresholded image, then grab the largest one
+    cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    cnts = imutils.grab_contours(cnts)
+    c = max(cnts, key=cv2.contourArea)
+
+    # draw the outline of the object, then draw each of the
+    cv2.drawContours(black_image, [c], -1, (255, 0, 255), 2)
+
+    # show the output image
+    # cv2.imshow("Image", black_image)
+    # cv2.waitKey(0)
+    return black_image
+
+
+
+
+
 def skeleton(img):
     """Topolopgical Skeleton: this function provides topoloical skeleton of an image.
         Args:
@@ -47,37 +82,6 @@ def skeleton(img):
         if zeros == size:
             done = True
     return skel
-
-
-def plot_contour(image):
-    """External contour: this function provides the most external contour in a image.
-        Args:
-            image(cv2.image): image loaded by cv2.imread.
-
-        Returns:
-            image(cv2.image): impanted image
-        References:
-            https://docs.opencv.org/3.4/d1/d32/tutorial_py_contour_properties.html
-    """
-
-    # load the image, convert it to grayscale, and blur it slightly
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    gray = cv2.GaussianBlur(gray, (5, 5), 0)
-
-    # threshold the image, then perform a series of erosions +
-    # dilations to remove any small regions of noise
-    thresh = cv2.threshold(gray, 45, 255, cv2.THRESH_BINARY)[1]
-    thresh = cv2.erode(thresh, None, iterations=2)
-    thresh = cv2.dilate(thresh, None, iterations=2)
-
-    # find contours in thresholded image, then grab the largest one
-    cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    print(len(cnts))
-    for cnt in cnts:
-        cv2.drawContours(img, [cnt], 0, (0, 255, 0), 3)
-        cv2.imshow("Image", image)
-        cv2.waitKey()
-        cv2.destroyAllWindows()
 
 
 def impanting(image_path,mask_path):
@@ -116,9 +120,9 @@ def shape_match(im1,im2):
     d3 = cv2.matchShapes(im1, im2, cv2.CONTOURS_MATCH_I3, 0)
     return d1,d2,d3
 
-
 def external_contour(image):
     """External contour: this function provides the most external contour in a image.
+
         Args:
             image(cv2.image): image loaded by cv2.imread.
 
@@ -145,7 +149,6 @@ def external_contour(image):
     c = max(cnts, key=cv2.contourArea)
 
     return c
-
 
 def image_kind(image_path):
     """image_kind classifies the image from a path into one of the types desired
@@ -174,6 +177,7 @@ def image_kind(image_path):
     else:
         kind='unknown'
         impant=impanting(image_path,mask_path)
+        plot_contours(impant)
         contorno = external_contour(impant)
         area=cv2.contourArea(contorno)
         c=contorno
@@ -220,6 +224,6 @@ if __name__ == '__main__':
     image_folder=r'../testes/images'
     kind={1:'Foot',2:'Front Upper Body',3: 'Back Upper Body',4: 'Front Legs', 5:'Back Legs'}
     for file in os.listdir(image_folder):
-        file_path=os.path.join(image_folder,file)
-        k=image_kind(file_path)
+        image_path=os.path.join(image_folder,file)
+        k=image_kind(image_path)
         print(file,':',kind[k])

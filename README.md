@@ -77,8 +77,17 @@ https://www.workana.com/job/processamento-de-imagem-1?dateFrom=2019-05-22&dateTo
         
     1.Contorno do Corpo (data prevista 23/05)
         1.1 Utilizar OpenCV para contorno do corpo;
+            [OK] create a mask to hide legend
+            [ok] most external contour
+            [ok] calculate image aspect ratio
         1.2 Relacionar contorno do corpo com padrões definidos;
+            * foot -> image em landscape
+            * legs -> aspect ratio por volta de 0.45
+            * upper body -> aspect ratio por volta de 0.75
+            * Para diferenciar frente de costas:
+                operação de esqueletização (Ref 3) e posterior verificação pos distancia momentos Hu (Ref5.)
         1.3 Script: Input -> Imagem Output-> contornos e classificação;
+        
         1.4 GATE de Validação (data prevista 25/05;
 
 # REFERENCES
@@ -91,4 +100,5 @@ https://www.workana.com/job/processamento-de-imagem-1?dateFrom=2019-05-22&dateTo
 
 [4. Topological Skeleton](https://en.wikipedia.org/wiki/Topological_skeleton)
 
+[5. Hu Moments](https://www.learnopencv.com/shape-matching-using-hu-moments-c-python/)
 
