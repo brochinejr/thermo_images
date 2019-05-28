@@ -230,3 +230,7 @@ if __name__ == '__main__':
     for file in os.listdir(image_folder):
         image_path=os.path.join(image_folder,file)
         imp=impanting(image_path,r'image_map/mask.jpeg')
+        bk=plot_contours(imp)
+
+        # cv2.imshow("Image", black_image)
+        # cv2.waitKey(0)
