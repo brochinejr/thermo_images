@@ -87,7 +87,7 @@ https://www.workana.com/job/processamento-de-imagem-1?dateFrom=2019-05-22&dateTo
             * Para diferenciar frente de costas:
                 operação de esqueletização (Ref 3) e posterior verificação pos distancia momentos Hu (Ref5.)
         1.3 Script: Input -> Imagem Output-> contornos e classificação;
-        
+            
         1.4 GATE de Validação (data prevista 25/05;
 
 # REFERENCES

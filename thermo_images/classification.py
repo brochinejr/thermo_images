@@ -83,8 +83,8 @@ def skeleton(img):
             done = True
     return skel
 
-
-def impanting(image_path,mask_path):
+# def impanting(image_path,mask_path):
+def impanting(img,mask_path):
     """Image Impanting: this uses a mask to interpolate a mask region with surroundings pixels.
 
         Args:
@@ -94,7 +94,7 @@ def impanting(image_path,mask_path):
         Returns:
             image(cv2.image): impanted image
     """
-    img = cv2.imread(image_path)
+    # img = cv2.imread(image_path)
     mask = cv2.imread(mask_path, 0)
     dst = cv2.inpaint(img, mask, 3, cv2.INPAINT_TELEA)
     return dst
@@ -149,6 +149,24 @@ def external_contour(image):
     c = max(cnts, key=cv2.contourArea)
 
     return c
+def image_resize(img,name):
+    ''' resize image to the patern 640 x 480 or 480 x 640
+
+    Args:
+        image(cv2.image): image loaded by cv2.imread.
+    Returns:
+        image(cv2.image): impanted image
+
+    '''
+    dimension = img.shape
+    if dimension[0]>dimension[1]:
+        newimg = cv2.resize(img, (480, 640))
+    elif dimension[1]>dimension[0]:
+        newimg = cv2.resize(img, (640, 480))
+    newname=name.replace('.jpeg','_resized.jpeg')
+    filename=os.path.join('resized', newname)
+    cv2.imwrite(os.path.join('resized', newname), newimg)
+    return newimg,filename
 
 def image_kind(image_path):
     """image_kind classifies the image from a path into one of the types desired
@@ -169,14 +187,22 @@ def image_kind(image_path):
     """
     mask_path=r'image_map/mask.jpeg'
     img = cv2.imread(image_path)
+
     dimension=img.shape
+    if ((dimension[0] != 640) and (dimension[0] != 480)) or ((dimension[1] != 640) and (dimension[1] != 480)) :
+        print('==============resizing')
+        name=os.path.basename(image_path)
+        img,image_path=image_resize(img,name)
+        print(image_path)
+        print(img.shape)
     # Foot images are landscape and others are portrait, so it is possible to define if foot by dimension
     if dimension[0] == 480:
         kind=1
         solidity,aspect_ratio='NA'
     else:
         kind='unknown'
-        impant=impanting(image_path,mask_path)
+        # impant=impanting(image_path,mask_path)
+        impant = impanting(img, mask_path)
         plot_contours(impant)
         contorno = external_contour(impant)
         area=cv2.contourArea(contorno)
@@ -228,7 +254,7 @@ if __name__ == '__main__':
         k=image_kind(image_path)
         print(file,':',kind[k])
         if k is not 1:
-            imp=impanting(image_path,r'image_map/mask.jpeg')
+            imp=impanting(cv2.imread(image_path),r'image_map/mask.jpeg')
         else:
             imp=cv2.imread(image_path)
         bk=plot_contours(imp)
