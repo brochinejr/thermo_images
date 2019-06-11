@@ -47,7 +47,7 @@ def plot_contours(image):
     # show the output image
     # cv2.imshow("Image", black_image)
     # cv2.waitKey(0)
-    return black_image
+    return black_image,c
 
 
 
@@ -257,6 +257,6 @@ if __name__ == '__main__':
             imp=impanting(cv2.imread(image_path),r'image_map/mask.jpeg')
         else:
             imp=cv2.imread(image_path)
-        bk=plot_contours(imp)
+        bk,_=plot_contours(imp)
         cv2.imshow("Image",bk)
         cv2.waitKey(0)
